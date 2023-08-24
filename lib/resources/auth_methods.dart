@@ -1,3 +1,4 @@
+import 'package:clone_of_instagram/resources/storage_methods.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,23 +14,32 @@ class AuthMethods {
     required String password,
     required String username,
     required String bio,
-    // required Uint8List file,
+    required Uint8List file,
   }) async {
     String res = "Some error occurred";
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
           username.isNotEmpty ||
-          bio.isNotEmpty) {
+          bio.isNotEmpty||
+          file != null
+      ) {
         // ユーザーを登録する
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+
+        String photoUrl = await StorageMethods().uploadImageToStorage('ProfilePics', file, false);
+
 
         await _firestore.collection('users').doc(cred.user!.uid).set({
           'username': username,
           'uid': cred.user!.uid,
           'email': email,
           'bio': bio,
+          'followers':[],
+          'following':[],
+          'photoUrl':photoUrl,
+
         });
 
         res = "success";
