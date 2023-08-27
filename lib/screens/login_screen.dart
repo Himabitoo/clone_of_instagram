@@ -1,3 +1,6 @@
+import 'package:clone_of_instagram/resources/auth_methods.dart';
+import 'package:clone_of_instagram/screens/home_screen.dart';
+import 'package:clone_of_instagram/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:clone_of_instagram/utils/colors.dart';
@@ -13,11 +16,36 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+
+    super.dispose();
+  }
+
+  void loginUser() async{
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().loginUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+    );
+
+    if(res == "success"){
+
+
+      
+    }else{
+      
+      showSnackBar(res, context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -55,9 +83,15 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 24),
               // button login
               InkWell(
-                onTap: () {},
+                onTap: loginUser,
                 child: Container(
-                  child: const Text('ログイン'),
+                  child: _isLoading
+                      ? const Center(
+                        child:CircularProgressIndicator(
+                          color: primaryColor ,
+                        ),
+                      )
+                      : const Text('ログイン'),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),

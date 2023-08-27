@@ -44,9 +44,41 @@ class AuthMethods {
 
         res = "success";
       }
-    } catch (err) {
+    } on FirebaseAuthException catch(err){
+      if(err.code == 'invalid-email'){
+        res = '有効なメールアドレスではありません。';
+      }else if(err.code == 'weak-password'){
+        res = 'パスワードが短すぎます。';
+      }
+
+    }
+
+    catch (err) {
       res = err.toString();
     }
     return res;
   }
+
+  Future<String> loginUser({
+    required String email,
+    required String password
+  }) async {
+    String res = "Some error";
+
+    try{
+
+      if(email.isNotEmpty || password.isNotEmpty){
+
+        await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+        res = "success";
+      }else{
+        res = "メールアドレスまたはパスワードが空です。";
+      }
+    } catch(err){
+      res = err.toString();
+    }
+    return res;
+  }
+
 }

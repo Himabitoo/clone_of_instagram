@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:clone_of_instagram/config.dart';
@@ -28,16 +29,6 @@ void main() async {
   } else {
     // when Native
     await Firebase.initializeApp();
-    // await Firebase.initializeApp(
-    //   options: const FirebaseOptions(
-    //     apiKey: FirebaseConfig.Native_apiKey,
-    //     appId: FirebaseConfig.Native_appId,
-    //     projectId: FirebaseConfig.Native_projectId,
-    //     messagingSenderId: FirebaseConfig.Native_messagingSenderId,
-    //     authDomain: FirebaseConfig.Native_authDomain,
-    //     storageBucket: FirebaseConfig.Native_storageBucket,
-    //   ),
-    // );
   }
   runApp(const MyApp());
 }
@@ -54,11 +45,31 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: mobileBackgroundColor,
       ),
-      // home: const ResponsiveLayout(
-      //   webScreenLayout: WebScreenLayout(),
-      //   mobileScreenLayout: MobileScreenLayout(),
-      // ),
-      home: SignUpScreen(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context,snapshot){
+          if(snapshot.connectionState == ConnectionState.active){
+            if(snapshot.hasData){
+              return const ResponsiveLayout(
+                webScreenLayout: WebScreenLayout(),
+                mobileScreenLayout: MobileScreenLayout(),
+              );
+            }else if (snapshot.hasError){
+
+              return Center(child: Text('${snapshot.error }'),);
+
+            }
+          }
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const Center(
+              child: CircularProgressIndicator(
+                color: primaryColor,
+              ),
+            );
+          }
+          return const LoginScreen();
+        },
+      ),
     );
   }
 }
