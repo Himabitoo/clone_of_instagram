@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:clone_of_instagram/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +8,10 @@ import 'package:clone_of_instagram/resources/auth_methods.dart';
 import 'package:clone_of_instagram/utils/colors.dart';
 import 'package:clone_of_instagram/utils/utils.dart';
 import 'package:clone_of_instagram/widgets/text_fiels_input.dart';
+
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive_layout_screen.dart';
+import '../responsive/web_screen_layout.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -51,13 +56,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
       file: _image!,
     );
 
+    setState(() {
+      _isLoading = false;
+    });
+
     if(res != 'success') {
       showSnackBar(res, context);
     } else{
-      setState(() {
-        _isLoading = false;
-      });
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            webScreenLayout: WebScreenLayout(),
+            mobileScreenLayout: MobileScreenLayout(),
+          ),
+        ),
+      );
     }
+  }
+
+  void navigateToLogin(){
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const LoginScreen(),
+    ),
+    );
   }
 
   @override
@@ -168,16 +188,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: Text("アカウントをお持ちでないですか？"),
+                    child: Text("アカウントをお持ちですか？"),
                     padding: const EdgeInsets.symmetric(
                       vertical: 8,
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: navigateToLogin,
                     child: Container(
                       child: Text(
-                        "登録する",
+                        "ログイン",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),

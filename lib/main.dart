@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:clone_of_instagram/config.dart';
 import 'package:clone_of_instagram/screens/login_screen.dart';
-import 'package:clone_of_instagram/screens/signup_screnn.dart';
 import 'package:clone_of_instagram/utils/colors.dart';
 import 'package:clone_of_instagram/responsive/web_screen_layout.dart';
 import 'package:clone_of_instagram/responsive/mobile_screen_layout.dart';
